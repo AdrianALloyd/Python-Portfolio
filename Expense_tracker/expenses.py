@@ -11,19 +11,23 @@ expenses = {
 
 def create_expense():
     # prompt for an expense ammount
-    expense = format(float(input("Please enter an Expense (e.g 20.50)to track:\n")), '.2f')
+    try:
+        expense = format(float(input("Please enter an Expense (e.g 20.50)to track:\n")), '.2f')
 
-    if float(expense) < 0:
-        print("I'm sorry but that is not a valid number, defaulting value to 0")
-        expense = 0
-    #prompt for expense category
-    category = input("Please enter what category this expense falls into:\n")
-    #prompt for expense description
-    description = input("Please give a brief description for this expense:\n")
+        if float(expense) < 0:
+            print("I'm sorry but that is not a valid number, defaulting value to 0")
+            expense = 0
+        #prompt for expense category
+        category = input("Please enter what category this expense falls into:\n")
+        #prompt for expense description
+        description = input("Please give a brief description for this expense:\n")
 
-    expenses[expense] = {category : description}
-    print("Expense successfully added!\n")
-#store data
+        expenses[expense] = {category : description}
+        print("Expense successfully added!\n")
+    except ValueError:
+        print("Invalid input. Please enter a valid number.")
+    except Exception as e:
+        print(f"An error has occured: {e}")
 
 def total():
     cost_total = 0
@@ -33,6 +37,9 @@ def total():
             
         except TypeError:
             print("A type error has occurred!")
+        except ValueError:
+            print("A value error has occured")
+
     print(f"Your total is £{cost_total}")
 
 def categories():
@@ -48,7 +55,6 @@ def categories():
                 category.update({y: x})
                 #print("category created")
             
-        
     for x in category:
         print(f"{x} Total: £{category[x]}")
             
