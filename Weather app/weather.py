@@ -49,6 +49,8 @@ while True:
             print("Available commands: \nlist - Gives a list of available cities \n'city name' - Displays the weather for the selected city \nexit - Exits the application")
         case "list":
             list()
+        case "exit":
+            break
         case _:
             display(com)
 
