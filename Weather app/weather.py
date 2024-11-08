@@ -29,6 +29,7 @@ def display(user_city):
     except KeyError:
         print("An error has occurred, data unavailable or misspelled")
 
+
 def list():
     print("Cities:")
     for x in weather_data:
