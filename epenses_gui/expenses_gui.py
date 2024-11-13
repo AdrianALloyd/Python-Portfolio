@@ -5,7 +5,7 @@ import json
 import string
 
 expenses = {
-    "15.36" : {"Bills" : "Paid gas and electric"},
+    "152.00" : {"Bills" : "Paid gas and electric"},
     "22.56" : {"Shopping" : "Brought snacks"},
     "72.51" : {"Entertainment" : "Netflix 1 year"},
     "42.81" : {"Bills" : "Water Bill"}
@@ -100,17 +100,20 @@ def delete():
     
         
 def add():
-
+    destroy()
     create_add()
+    
     price = tk.StringVar()
     expense_category = tk.StringVar()
     details = tk.StringVar()
     display_label.config(text="")
 
     def push():
-        expenses.update({price.get() : {expense_category.get() : details.get()}})
-        display_label.config(text="Expense successfully added to list")
+        expenses.update({format(float(price.get()), '.2f') : {expense_category.get() : details.get()}})
+        
+        refresh()
         destroy()
+        display_label.config(text="Expense successfully added to list")
 
     #destroy()
     
@@ -126,6 +129,14 @@ def add():
     
     
     
+def refresh():
+    
+    deleting_dropdown["menu"].delete(0, END)
+    selected_option.set(list(expenses.keys())[0])
+    new_options = expenses.keys()
+    for options in new_options:
+        #deleting_dropdown["menu"].add_command(label = options)
+        deleting_dropdown["menu"].add_command(label = options, command = tk._setit(selected_option, options))
 
 
 def create_delete_option():
@@ -133,10 +144,10 @@ def create_delete_option():
     deleting_dropdown.grid()
     delete_option_button.grid()
     
-   
+    
 def change_delete_label(*args):
     selected = selected_option.get()
-    detail_text=""
+    detail_text= ""
     delete_category = list(expenses[selected].keys())
     delete_detail = list(expenses[selected].values())
     # for x in expenses:
@@ -148,9 +159,10 @@ def change_delete_label(*args):
 
 def remove(selected):
     expenses.pop(str(selected.get()))
-    selection_remove = deleting_dropdown['menu'].index(selected_option.get())
-    deleting_dropdown["menu"].delete(selection_remove)
     destroy()
+    refresh()
+    # selection_remove = deleting_dropdown['menu'].index(selected_option.get())
+    # deleting_dropdown["menu"].delete(selection_remove)
     display_label.config(text="Entry successfully deleted\n")
     
 
@@ -181,6 +193,7 @@ def destroy():
     delete_option_button.grid_remove()
     deleting_dropdown.grid_remove()
     delete_title_label.grid_remove()
+    selected_option.set('Please select an expense')
 def clear():
     destroy()
     expenses.clear()
@@ -225,9 +238,9 @@ delete_title_label = tk.Label(root,text = "Please select an expense to delete fr
 deleting_dropdown = OptionMenu(root, selected_option, *expenses.keys())
 delete_option_button = ttk.Button(root, text="Delete selected option", command=lambda: remove(selected_option))
 
-deleting_dropdown.grid(column=1, row=3, pady=5, sticky='w', ipadx=50)
+deleting_dropdown.grid(column=1, row=3, pady=5, sticky='w', ipadx=50, padx=30)
 delete_title_label.grid(column=1, row=2, pady=5, sticky='w')
-delete_option_button.grid(column=1, row= 5, padx=5, pady=5, sticky='w' )
+delete_option_button.grid(column=1, row= 5, padx=30, pady=5 )
 
 
 
