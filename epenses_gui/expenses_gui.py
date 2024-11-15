@@ -16,6 +16,10 @@ root = tk.Tk()
 root.title('Expense Tracker')
 root.geometry('700x500')
 
+#Sets a theme for the application
+style = ttk.Style()
+style.theme_use("clam")
+
 # Function to display expense summary
 def summary():
     # Clear all widgets from the screen

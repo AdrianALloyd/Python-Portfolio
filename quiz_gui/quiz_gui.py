@@ -110,6 +110,9 @@ root.geometry('600x400')
 #root.config(bg="skyblue")
 root.resizable(height=None, width=None)
 
+#Sets a theme for the application
+style = ttk.Style()
+style.theme_use("clam")
 
 #Function to initialize the quiz
 def load_game():

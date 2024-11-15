@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from tkinter import *
 
 #Creates the application window
@@ -7,6 +8,10 @@ root.title('Weather')
 root.geometry('400x200+50+50')
 root.resizable(False, False)
 # creates main window
+
+#Sets a theme for the application
+style = ttk.Style()
+style.theme_use("clam")
 
 #Example weather data
 weather_data = { 
