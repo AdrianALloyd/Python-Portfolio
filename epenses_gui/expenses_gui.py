@@ -2,8 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 import json
-import string
 
+#Dictionary containing sample data for expenses program
 expenses = {
     "152.00" : {"Bills" : "Paid gas and electric"},
     "22.56" : {"Shopping" : "Brought snacks"},
@@ -11,31 +11,29 @@ expenses = {
     "42.81" : {"Bills" : "Water Bill"}
 }
 
+# creates main window
 root = tk.Tk()
 root.title('Expense Tracker')
 root.geometry('700x500')
-#root.config(bg="skyblue")
 
-# creates main window
-
-# summary = tk.Label(root, text="Hello prog")
-# summary.pack(pady=5)
-
-
+# Function to display expense summary
 def summary():
+    # Clear all widgets from the screen
     destroy()
-    summary_text = ""
+    # Calls to functions to relay the relevant data
     category_text = categories()
     detail_text = details()
     total_text = total()
+    # Set the text on the main window
+    display_label.config(text=f"Summary\n {category_text}\n{detail_text}\n{total_text}")
 
-    summary_text = f"Summary\n {category_text}\n{detail_text}\n{total_text}"
-    display_label.config(text=summary_text)
-
+# Function to show category information about expenses
 def categories():
+    # Clear all widgets from the screen
     destroy()
     category = {}
     category_text= ""
+    # Loops to cycle through each expense and sort into categories
     for x in expenses:
         for y in expenses[x]:
             if y in category:
@@ -50,20 +48,26 @@ def categories():
             
     display_label.config(text=category_text)
     return category_text
-    
+
+# Function to show the full details for each expense
 def details():
+    # Clear the screen
     destroy()
     detail_text=""
+    # Loops to cycle through each expense 
     for x in expenses:
         for y in expenses[x]:
             detail_text += (f"Cost: £{x}, For: {y}, Notes: {expenses[x][y]}\n")
     display_label.config(text=detail_text)
     return detail_text
 
+# Function to show the total of all expenses
 def total():
+    # Clear the screen
     destroy()
     total_text = "Your total is £"
     cost_total = 0
+    # Loop to add up cost for each expense
     for x in expenses:
         try:
             cost_total += float(x)
@@ -76,6 +80,7 @@ def total():
     display_label.config(text=total_text)
     return total_text
 
+# Function to save current expense list to a file
 def save():
     destroy()
     with open("my_expenses.json", "w") as fp:
@@ -83,6 +88,7 @@ def save():
 
     display_label.config(text="File successfully saved")
 
+# Function to load an expense list from a file
 def load():
     destroy()
     f = open("my_expenses.json")
@@ -91,33 +97,41 @@ def load():
     clear()
     expenses.update(load_file)
     display_label.config(text="File successfully loaded")
-    
+
+# Function to delete an item from expense list
 def delete():
     destroy()
     summary()
     display_label.config(text="Which item do you want to delete from your list,\n please select from the menu:\n")
-    create_delete_option()
-    
-        
+    delete_title_label.grid()
+    deleting_dropdown.grid()
+    delete_option_button.grid()
+
+# Function to add an item to expense list 
 def add():
     destroy()
-    create_add()
+    # Draw the add screen
+    title_label.grid()
+    price_label.grid()
+    price_input.grid()
+    category_label.grid()
+    category_input.grid()
+    details_label.grid()
+    details_input.grid()
+    add_expense_button.grid()
     
     price = tk.StringVar()
     expense_category = tk.StringVar()
     details = tk.StringVar()
     display_label.config(text="")
-
+    # Function to add the cost to the list
     def push():
         expenses.update({format(float(price.get()), '.2f') : {expense_category.get() : details.get()}})
         
         refresh()
         destroy()
         display_label.config(text="Expense successfully added to list")
-
-    #destroy()
-    
-    
+    # Update screen items
     title_label.config(text = "Please enter details for the new expense:")
     price_label.config(text = "Cost:")
     price_input.config(textvariable = price)
@@ -126,9 +140,9 @@ def add():
     details_label.config(text="Details:")
     details_input.config(textvariable=details)
     add_expense_button.config(text="Add Expense", command=push)
-    
-    
-    
+
+
+# Function to refresh the list of costs
 def refresh():
     
     deleting_dropdown["menu"].delete(0, END)
@@ -139,48 +153,25 @@ def refresh():
         deleting_dropdown["menu"].add_command(label = options, command = tk._setit(selected_option, options))
 
 
-def create_delete_option():
-    delete_title_label.grid()
-    deleting_dropdown.grid()
-    delete_option_button.grid()
-    
-    
+# Function to keep track of when dropdown meny changes selection
 def change_delete_label(*args):
     selected = selected_option.get()
     detail_text= ""
     delete_category = list(expenses[selected].keys())
     delete_detail = list(expenses[selected].values())
-    # for x in expenses:
-    #     for y in expenses[x]:
-    #         detail_text += (f"Cost: £{x}, For: {y}, Notes: {expenses[x][y]}\n")
     detail_text= f"Cost: £{selected}\nCategory: {delete_category[0]}\nDetails: {delete_detail[0]}"
     display_label.config(text=detail_text)
     return detail_text
 
+# Function that removes the selected item from the expense list
 def remove(selected):
     expenses.pop(str(selected.get()))
     destroy()
     refresh()
-    # selection_remove = deleting_dropdown['menu'].index(selected_option.get())
-    # deleting_dropdown["menu"].delete(selection_remove)
     display_label.config(text="Entry successfully deleted\n")
     
-
-
-def create_add():
-    title_label.grid()
-    price_label.grid()
-    price_input.grid()
-    category_label.grid()
-    category_input.grid()
-    details_label.grid()
-    details_input.grid()
-    add_expense_button.grid()
-    
-
-
+# Function to clear the screen of all widgets
 def destroy():
-    # add widgets
     title_label.grid_remove()
     price_label.grid_remove()
     price_input.grid_remove()
@@ -189,24 +180,21 @@ def destroy():
     details_label.grid_remove()
     details_input.grid_remove()
     add_expense_button.grid_remove()
-    # delete widgets
     delete_option_button.grid_remove()
     deleting_dropdown.grid_remove()
     delete_title_label.grid_remove()
     selected_option.set('Please select an expense')
+
+# Function to clear the expense list
 def clear():
     destroy()
     expenses.clear()
-    
-    
 
+# Sets priority for screen rendering
 root.grid_columnconfigure(0, weight=1)
 root.grid_columnconfigure(1, weight=1)
 
-
-
-
-
+#Setting the title banner for the screen
 title = tk.Label(root, height=2, width=20, text="Expense Tracker")
 title.grid(row =0, column=0, columnspan = 3)
 
@@ -229,9 +217,7 @@ details_label.grid(column=1, row=7, pady=5, sticky='w')
 details_input.grid(column=1, row=8, pady=5, sticky='w')
 add_expense_button.grid(column=1, row=9, pady=5, sticky='w')
 
-
-# End of expense adding
-
+#Screen elements for deleting an expense
 selected_option = tk.StringVar(root)
 selected_option.trace("w", change_delete_label)
 delete_title_label = tk.Label(root,text = "Please select an expense to delete from the dropdown menu:", bg = "red")
@@ -242,13 +228,11 @@ deleting_dropdown.grid(column=1, row=3, pady=5, sticky='w', ipadx=50, padx=30)
 delete_title_label.grid(column=1, row=2, pady=5, sticky='w')
 delete_option_button.grid(column=1, row= 5, padx=30, pady=5 )
 
-
-
-
+# Ensuring the screen is clear at startup
 destroy()
 
 
-
+# Drawing the main screen
 summary_button = ttk.Button(root, text="Summary",command = summary)
 summary_button.grid(row=2, column=0, pady=5, padx=10, sticky='w')
 
@@ -274,23 +258,11 @@ save_button.grid(row=8, column=0, pady=5, padx=10, sticky='w')
 load_button = ttk.Button(root, text="Load",command = load)
 load_button.grid(row=9, column=0, pady=5, padx=10, sticky='w')
 
-
-
 display_label = tk.Label(root, height = 20, width=50, text="Please select an option from the left")
 display_label.grid(column=1, row=3,rowspan=7, sticky='w')
 display_label.lower()
 
-#create_expense function
-
-#button to create expense
-#button to delete expense
-#button to show the total
-#button to show the summary
-#button to show the category breakdown
-#dropdown menu to select categories in category view
-#save and load buttons
-#save and load functions
 
 
-
+# Keeps the screen active
 root.mainloop()
